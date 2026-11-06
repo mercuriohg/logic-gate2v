@@ -1,0 +1,47 @@
+#ranking-table {
+    width: 80%;
+    margin: 30px auto;
+    border-collapse: collapse;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 2px solid rgb(145, 12, 185);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(145, 12, 185, 0.5);
+}
+
+#ranking-table thead {
+    background-color: rgb(145, 12, 185);
+}
+
+#ranking-table th {
+    color: white;
+    font-family: "ArcadeClassic", Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    padding: 15px;
+    text-align: center;
+}
+
+#ranking-table td {
+    color: white;
+    font-family: "Pixelify Sans", Arial, Helvetica, sans-serif;
+    padding: 12px;
+    text-align: center;
+    border-top: 1px solid rgba(145, 12, 185, 0.4);
+}
+
+#ranking-table tbody tr {
+    transition: 0.3s;
+}
+
+#ranking-table tbody tr:hover {
+    background-color: rgba(145, 12, 185, 0.2);
+    transform: scale(1.01);
+}
+
+#container-main h1 {
+    text-align: center;
+    color: white;
+    font-family: "ArcadeClassic", Arial, Helvetica, sans-serif;
+    margin: 20px 0;
+    text-shadow: 0 0 10px rgb(145, 12, 185);
+}

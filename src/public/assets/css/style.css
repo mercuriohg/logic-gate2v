@@ -1,0 +1,232 @@
+@import url("./header.css");
+@import url("./footer.css");
+@import url("./main.css");
+@import url("./card.css");
+@import url("./responsive.css");
+@import url("./table.css");
+@import url("./profile.css");
+@import url("./app.css");
+@import url("https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap");
+@font-face {
+  font-family: "ArcadeClassic";
+  src: url("../fonts/ARCADE_I.TTF") format("truetype");
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: black;
+  margin: 0;
+}
+body::before {
+  content: "";
+  pointer-events: none;
+
+  position: fixed;
+
+  inset: 0;
+
+  background:
+    radial-gradient(circle at 20% 30%, white 1px, transparent 2px),
+    radial-gradient(circle at 70% 20%, white 1px, transparent 2px),
+    radial-gradient(circle at 40% 70%, white 1px, transparent 2px),
+    radial-gradient(circle at 90% 80%, white 1px, transparent 2px),
+    radial-gradient(circle at 60% 50%, white 1px, transparent 2px),
+    radial-gradient(circle at 10% 90%, white 1px, transparent 2px),
+    radial-gradient(circle at 80% 60%, white 1px, transparent 2px);
+
+  background-size:
+    300px 300px,
+    400px 400px,
+    500px 500px,
+    600px 600px,
+    350px 350px,
+    450px 450px,
+    700px 700px;
+
+  opacity: 0.9;
+
+  z-index: 0;
+  animation:
+    moverEstrelas 20s linear infinite,
+    piscarEstrelas 4s ease-in-out infinite alternate;
+}
+@keyframes moverEstrelas {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100px 200px;
+  }
+}
+@keyframes piscarEstrelas {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.error {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: white;
+  font-family: "ArcadeClassic", sans-serif;
+  padding: 100px 20px;
+}
+#error-404-description {
+  font-size: 1.5rem;
+  margin-top: 80px;
+  text-align: center;
+}
+#btn-admin {
+  display: none;
+}
+.adm {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: white;
+  font-family: "ArcadeClassic", sans-serif;
+  padding: 100px 20px;
+}
+.adm p {
+  font-size: 1.2rem;
+  text-align: center;
+}
+/*Temporário*/
+.mapa-fases {
+  position: relative;
+  width: 700px;
+  height: 350px;
+  margin: 50px auto;
+}
+
+/* Fases */
+
+.fase {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 3px solid #333;
+  border-radius: 8px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.fase:hover {
+  transform: scale(1.1);
+}
+
+.fase.ativa {
+  background: #9df0a8;
+}
+
+/* Posições */
+
+.fase:nth-of-type(8) {
+  top: 20px;
+  left: 20px;
+}
+
+.fase:nth-of-type(9) {
+  top: 80px;
+  left: 80px;
+}
+
+.fase:nth-of-type(10) {
+  top: 130px;
+  left: 160px;
+}
+
+.fase:nth-of-type(11) {
+  top: 190px;
+  left: 260px;
+}
+
+.fase:nth-of-type(12) {
+  top: 170px;
+  left: 360px;
+}
+
+.fase:nth-of-type(13) {
+  top: 250px;
+  left: 320px;
+}
+
+.fase:nth-of-type(14) {
+  top: 260px;
+  left: 450px;
+}
+
+.fase:nth-of-type(15) {
+  top: 320px;
+  left: 580px;
+}
+
+/* Linhas */
+
+.linha {
+  position: absolute;
+  height: 4px;
+  background: #333;
+  transform-origin: left center;
+}
+
+.l1 {
+  width: 80px;
+  top: 55px;
+  left: 45px;
+  transform: rotate(40deg);
+}
+
+.l2 {
+  width: 90px;
+  top: 112px;
+  left: 105px;
+  transform: rotate(30deg);
+}
+
+.l3 {
+  width: 110px;
+  top: 170px;
+  left: 185px;
+  transform: rotate(28deg);
+}
+
+.l4 {
+  width: 100px;
+  top: 210px;
+  left: 285px;
+  transform: rotate(-20deg);
+}
+
+.l5 {
+  width: 70px;
+  top: 210px;
+  left: 350px;
+  transform: rotate(100deg);
+}
+
+.l6 {
+  width: 120px;
+  top: 275px;
+  left: 345px;
+  transform: rotate(5deg);
+}
+
+.l7 {
+  width: 120px;
+  top: 290px;
+  left: 480px;
+  transform: rotate(30deg);
+}

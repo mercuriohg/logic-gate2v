@@ -1,0 +1,289 @@
+/* Login */
+#login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid rgb(145, 12, 185);
+  border-radius: 10px;
+  width: 450px;
+  margin: 50px auto;
+  height: 600px;
+}
+#login-container h2 {
+  text-align: center;
+  color: white;
+  font-family: "ArcadeClassic", Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+.input-user {
+  padding: 10px;
+  border: 2px solid rgb(145, 12, 185);
+  border-radius: 5px;
+  background-color: transparent;
+  color: white;
+  font-family: "Pixelify Sans", Arial, Helvetica, sans-serif;
+  margin: 10px 20px;
+  width: 90%;
+}
+.btn-login {
+  font-family: "Pixelify Sans", Arial, Helvetica, sans-serif;
+  margin-top: 20px;
+  color: rgb(235, 229, 236);
+  text-decoration: none;
+  width: 50%;
+  font-size: 18px;
+  background-color: transparent;
+  padding: 10px 20px;
+  border: 2px solid rgb(145, 12, 185);
+  border-radius: 5px;
+}
+.btn-login:hover {
+  cursor: pointer;
+  background-color: rgb(145, 12, 185);
+  color: white;
+}
+#login-form {
+  width: 90%;
+}
+#button-box {
+  display: flex;
+  justify-content: center;
+}
+#user-box,
+#email-box,
+#password-box {
+  margin-bottom: 10px;
+  background-color: transparent;
+  gap: 5px;
+}
+.labels {
+  display: flex;
+  flex-direction: column;
+}
+.labels span {
+  margin-top: 20px;
+  color: red;
+  font-family: "Pixelify Sans", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+.style-label {
+  color: rgb(145, 12, 185);
+  margin: 10px;
+  font-family: "Pixelify Sans", Arial, Helvetica, sans-serif;
+  font-size: 15px;
+}
+.style-label a {
+  color: white;
+  text-decoration: none;
+}
+.style-label a:hover {
+  color: rgb(152, 93, 170);
+  text-decoration: underline;
+}
+label {
+  margin-left: 20px;
+  color: white;
+  font-family: "ArcadeClassic", Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+/*Cards em projeto.php*/
+.logica-door {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgb(145, 12, 185);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px;
+  width: 300px;
+}
+.logica-door:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+#portas {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  #portas {
+    gap: 18px;
+  }
+  .logica-door {
+    width: calc(50% - 40px);
+    min-width: 240px;
+    margin: 16px;
+  }
+  .card-img {
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  #container-main {
+    padding: 0 16px 30px;
+  }
+  #portas {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .logica-door {
+    width: 100%;
+    max-width: 360px;
+    margin: 12px 0;
+  }
+  .card-img {
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+  }
+  .card-text {
+    width: 100%;
+    padding: 18px;
+  }
+}
+
+/*Card Text*/
+#info-porta {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+#info-porta.active {
+  display: flex;
+}
+
+.card-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 520px);
+  padding: 24px;
+  background-color: rgba(0, 0, 0, 0.95);
+  border: 2px solid rgb(145, 12, 185);
+  border-radius: 16px;
+  box-shadow: 0 0 40px rgba(145, 12, 185, 0.35);
+  animation: fadeInCard 0.35s ease-out forwards;
+}
+
+@keyframes fadeInCard {
+  0% {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.9);
+  }
+
+  70% {
+    transform: translateY(4px) scale(1.02);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.card-text p {
+  color: white;
+  font-family: "Pixelify Sans", Arial, Helvetica, sans-serif;
+  margin: 10px 0;
+  text-align: justify;
+  line-height: 1.7;
+}
+.card-img {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  margin: 18px 0;
+}
+.mark {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.mark i {
+  font-size: 1.4rem;
+  color: rgb(145, 12, 185);
+  cursor: pointer;
+}
+.mark i:hover {
+  color: rgb(152, 93, 170);
+}
+.box-admin{
+  width: 200px; 
+  height: 200px;
+  border: 2px solid rgb(145, 12, 185);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.box-admin:hover{
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+.btn-admin{
+  font-family: "Pixelify Sans", Arial, Helvetica, sans-serif;
+  color: rgb(235, 229, 236);
+  text-decoration: none;
+  width: 80%;
+  font-size: 18px;
+  background-color: transparent;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+.admin-options{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 30px;
+}
+#admin-new-phase{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 30px;
+}
+.form-control{
+  font-family: "Pixelify Sans", Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  width: 100%;
+  padding: 10px;
+  border: 2px solid rgb(145, 12, 185);
+  border-radius: 5px;
+  background-color: transparent;
+  color: white;
+}
+.form-control > option{
+  background-color: rgba(0, 0, 0, 0.95);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .card-text {
+    width: 100%;
+    padding: 18px;
+  }
+  .card-img {
+    max-width: 260px;
+  }
+}
