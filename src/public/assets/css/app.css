@@ -27,13 +27,86 @@
 .admin-actions { display: flex; gap: 8px; justify-content: center; align-items: center; }
 .admin-actions form { margin: 0; }
 
-.fase-page { color: white; font-family: "Pixelify Sans", Arial, sans-serif; text-align: center; }
+.fase-page { position: relative; z-index: 1; color: white; font-family: "Pixelify Sans", Arial, sans-serif; text-align: center; }
 .fase-meta { opacity: 0.85; margin-bottom: 14px; }
 .fase-enunciado { max-width: 720px; margin: 16px auto; padding: 16px; border: 1px solid rgb(145, 12, 185); border-radius: 10px; background: rgba(0, 0, 0, 0.6); }
+.fase-page > .fase-meta { max-width: 100%; margin: 8px auto 16px; text-align: center; }
+.fase-enunciado p { max-width: 100%; margin: 8px auto; text-align: center; line-height: 1.5; }
 .fase-objetivo { margin-top: 10px; }
 .fase-portas { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 14px 0 24px; }
 .fase-resultado { min-height: 1.5em; margin: 14px 0; }
 .fase-dev { margin: 16px 0; padding: 10px; border: 1px dashed #c9a400; }
+
+/* ---------- Simulador de circuitos ---------- */
+#fase-play { width: min(1280px, 100%); margin: 14px auto 36px; }
+.circuit-toolbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; margin: 10px 0 16px; }
+.circuit-toolbar-group { display: flex; align-items: center; gap: 8px; }
+.circuit-toolbar-group:last-child { justify-content: flex-end; }
+.circuit-toolbar .btn-admin { display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 44px; min-height: 42px; padding: 8px 14px; border: 2px solid rgb(145, 12, 185); border-radius: 5px; font-size: 16px; line-height: 1.2; white-space: nowrap; cursor: pointer; }
+.circuit-toolbar-title { overflow: hidden; color: white; font-family: "ArcadeClassic", Arial, sans-serif; font-size: clamp(13px, 2vw, 19px); text-overflow: ellipsis; white-space: nowrap; }
+.circuit-workspace { max-width: 100%; overflow: auto; border: 1px solid rgba(145, 12, 185, 0.65); border-radius: 12px; background: linear-gradient(145deg, rgba(28, 4, 38, 0.88), rgba(0, 0, 0, 0.76)); overscroll-behavior: contain; scrollbar-color: rgb(145, 12, 185) rgba(0, 0, 0, 0.5); }
+.circuit-board { position: relative; width: 100%; min-width: 760px; min-height: 500px; overflow: hidden; background-color: rgba(15, 0, 22, 0.38); background-image: radial-gradient(rgba(185, 90, 220, 0.2) 1px, transparent 1px); background-size: 28px 28px; touch-action: pan-x pan-y; }
+.circuit-wires { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; }
+.circuit-wire { fill: none; stroke: #bf74e5; stroke-width: 4; stroke-linecap: round; pointer-events: none; filter: drop-shadow(0 0 3px rgba(145, 12, 185, 0.8)); }
+.circuit-wire-hit { fill: none; stroke: transparent; stroke-width: 18; stroke-linecap: round; pointer-events: stroke; cursor: pointer; }
+.circuit-inputs, .circuit-gates { position: absolute; inset: 0; }
+.circuit-input, .circuit-gate, .circuit-led { position: absolute; z-index: 2; border: 2px solid rgb(145, 12, 185); border-radius: 10px; color: white; background: rgba(9, 0, 14, 0.96); box-shadow: 0 0 12px rgba(145, 12, 185, 0.28); }
+.circuit-input { left: 18px; display: flex; align-items: center; justify-content: space-between; width: 142px; height: 58px; padding: 8px 12px; }
+.circuit-input .circuit-pin-output { position: absolute; right: -9px; top: calc(50% - 9px); margin-right: 0; }
+.circuit-input-label, .circuit-gate-title, .circuit-led > span:not(.circuit-led-light) { font-family: "ArcadeClassic", Arial, sans-serif; font-size: 13px; }
+.circuit-toggle { min-width: 44px; min-height: 38px; border: 1px solid #35c46a; border-radius: 7px; color: white; background: #1e8c46; font: bold 18px "Pixelify Sans", Arial, sans-serif; cursor: pointer; touch-action: manipulation; }
+.circuit-toggle[data-value="0"] { border-color: #9c62ad; background: #32113b; }
+.circuit-gate { width: 118px; min-height: 100px; }
+.circuit-gate-head { display: flex; align-items: center; min-height: 34px; padding: 5px 8px; border-bottom: 1px solid rgba(145, 12, 185, 0.6); }
+.circuit-gate-remove { width: 28px; height: 28px; border: 1px solid #be283c; border-radius: 6px; color: white; background: rgba(190, 40, 60, 0.35); font-size: 18px; cursor: pointer; }
+.circuit-gate-body { position: relative; display: flex; align-items: center; justify-content: space-between; min-height: 62px; padding: 8px 5px; }
+.circuit-gate-symbol { color: #e6d6ee; font-family: "ArcadeClassic", Arial, sans-serif; font-size: 22px; }
+.circuit-gate-inputs { display: flex; flex-direction: column; justify-content: space-evenly; align-self: stretch; gap: 8px; }
+.circuit-pin { flex: 0 0 auto; width: 18px; height: 18px; padding: 0; border: 2px solid #f1d8ff; border-radius: 50%; background: #910cb9; }
+.circuit-pin:hover, .circuit-pin:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.circuit-pin-output { margin-right: -14px; }
+.circuit-pin-input { margin-left: -14px; }
+.circuit-pin.selected { box-shadow: 0 0 0 5px rgba(53, 196, 106, 0.55); background: #35c46a; }
+.circuit-gate-value { min-width: 22px; color: #35c46a; font-weight: 700; }
+.circuit-led { top: 50%; right: 24px; display: flex; align-items: center; gap: 9px; min-width: 136px; min-height: 72px; padding: 10px 12px; transform: translateY(-50%); }
+.circuit-led .circuit-pin-input { position: absolute; left: -9px; top: calc(50% - 9px); margin-left: 0; }
+.circuit-led-light { width: 20px; height: 20px; border: 2px solid #8a688f; border-radius: 50%; background: #291a2b; }
+.circuit-led.on .circuit-led-light { border-color: #afffc5; background: #35c46a; box-shadow: 0 0 16px #35c46a; }
+.circuit-led strong { margin-left: auto; font-size: 20px; }
+.gate-palette { display: flex; align-items: stretch; justify-content: center; gap: 12px; max-width: 100%; margin: 12px auto 0; padding: 8px 4px 12px; overflow-x: auto; scrollbar-color: rgb(145, 12, 185) rgba(0, 0, 0, 0.5); }
+.gate-palette-item { display: flex; flex-direction: column; align-items: center; gap: 5px; min-height: 78px; padding: 10px 6px; border: 2px solid rgb(145, 12, 185); border-radius: 10px; color: white; background: rgba(0, 0, 0, 0.7); font-family: "Pixelify Sans", Arial, sans-serif; cursor: pointer; }
+.gate-palette-item:hover:not(:disabled), .gate-palette-item:focus-visible:not(:disabled) { box-shadow: 0 0 14px rgba(145, 12, 185, 0.8); transform: translateY(-2px); }
+.gate-palette-symbol { color: #e6d6ee; font: 18px "ArcadeClassic", Arial, sans-serif; }
+.gate-palette-item:disabled { border-color: #4a1a5a; color: #927d98; background: rgba(30, 15, 35, 0.58); cursor: not-allowed; opacity: 0.62; }
+.gate-circuit-item { display: flex; flex: 0 0 116px; flex-direction: column; align-items: center; justify-content: space-between; gap: 4px; min-height: 126px; padding: 8px 6px; border: 2px solid rgb(145, 12, 185); border-radius: 10px; color: white; background: rgba(0, 0, 0, 0.7); font-family: "Pixelify Sans", Arial, sans-serif; cursor: pointer; transition: 0.2s; }
+.gate-circuit-item:hover:not(:disabled), .gate-circuit-item:focus-visible:not(:disabled) { transform: translateY(-3px); box-shadow: 0 0 16px rgba(145, 12, 185, 0.7); }
+.gate-circuit-item:disabled { border-color: #4a1a5a; color: #927d98; background: rgba(30, 15, 35, 0.58); cursor: not-allowed; opacity: 0.55; }
+.gate-circuit-item strong { font-family: "ArcadeClassic", Arial, sans-serif; font-size: 15px; }
+.gate-circuit-image { width: 66px; height: 66px; object-fit: contain; filter: drop-shadow(0 0 4px rgba(145, 12, 185, 0.45)); }
+.gate-circuit-item span { color: #d9a8ee; font-weight: 700; }
+.circuit-no-gates { grid-column: 1 / -1; margin: 0; text-align: center; color: #e6d6ee; }
+.fase-page .fase-resultado { max-width: 100%; margin: 12px auto; text-align: center; line-height: 1.5; color: #e6d6ee; font-size: 17px; }
+.fase-resultado[data-kind="success"] { color: #8af3aa; }
+.fase-resultado[data-kind="error"] { color: #ffd0d6; }
+.circuit-info { width: min(560px, calc(100% - 28px)); max-height: 85dvh; margin: auto; padding: 0; border: 2px solid rgb(145, 12, 185); border-radius: 12px; color: white; background: #100016; }
+.circuit-info::backdrop { background: rgba(0, 0, 0, 0.78); }
+.circuit-info-content { display: grid; gap: 14px; padding: 22px; text-align: left; }
+.circuit-info-content h2 { font-family: "ArcadeClassic", Arial, sans-serif; }
+.circuit-info-content p { margin: 0; line-height: 1.6; }
+@media (max-width: 600px) {
+  #fase-play { margin-top: 8px; }
+  .circuit-toolbar { grid-template-columns: 1fr auto; gap: 8px; }
+  .circuit-toolbar-title { grid-column: 1 / -1; grid-row: 1; text-align: center; }
+  .circuit-toolbar-group { grid-row: 2; }
+  .circuit-toolbar-group:last-child { justify-content: flex-end; }
+  .circuit-toolbar .btn-admin { min-height: 40px; padding: 8px 10px; }
+  .circuit-workspace { border-radius: 9px; }
+  .circuit-board { min-height: 430px; }
+  .gate-palette { justify-content: flex-start; }
+  .gate-circuit-item { flex-basis: 100px; min-height: 116px; }
+  .gate-circuit-image { width: 58px; height: 58px; }
+  .circuit-info-content { padding: 18px 14px; }
+}
 
 /* ---------- Home ---------- */
 .home-hero { text-align: center; color: white; max-width: 720px; margin: 40px auto; padding: 0 16px; font-family: "Pixelify Sans", Arial, Helvetica, sans-serif; }
@@ -72,7 +145,7 @@ a.node:hover rect, a.node:focus rect { filter: brightness(1.35); }
 .adm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; max-width: 760px; margin: 0 auto 30px; padding: 0 16px; }
 .adm-card { display: flex; flex-direction: column; gap: 10px; justify-content: space-between; min-height: 150px; padding: 20px; border: 2px solid rgb(145, 12, 185); border-radius: 14px; background: rgba(0, 0, 0, 0.7); color: white; text-decoration: none; font-family: "Pixelify Sans", Arial, sans-serif; transition: 0.2s; }
 .adm-card:hover { transform: translateY(-4px); box-shadow: 0 0 18px rgba(145, 12, 185, 0.7); }
-.adm-card-titulo { font-family: "ArcadeClassic", Arial, sans-serif; font-size: 26px; text-align: center; }
+.adm-card-titulo { font-family: "ArcadeClassic", Arial, sans-serif; font-size: 15px; text-align: center; }
 .adm-card-info { text-align: center; font-size: 17px; }
 .adm-card-acao { text-align: center; font-size: 14px; color: #d9a8ee; }
 
