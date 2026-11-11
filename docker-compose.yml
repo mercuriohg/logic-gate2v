@@ -1,9 +1,10 @@
+
 services:
   php:
     build: .
     container_name: php
     ports:
-      - "8080:80"
+      - "8082:80"
     volumes:
       - ./src:/var/www/html
     environment:
@@ -12,8 +13,8 @@ services:
       DB_DATABASE: logic_gate
       DB_USERNAME: logic_gate_user
       DB_PASSWORD: logic_gate_password
-      APP_ENV: dev          # em produção: remova (esconde os botões de teste da fase)
-      XP_POR_NIVEL: 100     # xp necessário para subir 1 nível
+      APP_ENV: dev
+      XP_POR_NIVEL: 100
     depends_on:
       mysql:
         condition: service_healthy
@@ -28,16 +29,26 @@ services:
       MYSQL_PASSWORD: logic_gate_password
       MYSQL_ROOT_PASSWORD: root_password
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - -h
+        - localhost
+        - -u
+        - root
+        - -proot_password
       interval: 5s
       timeout: 5s
       retries: 20
+      start_period: 10s
     restart: always
+
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: phpmyadmin
@@ -49,7 +60,7 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    restart: always
 
 volumes:
   mysql_data:
-    
