@@ -21,7 +21,8 @@ final class PhaseModel
     {
         $sql = '
             SELECT f.id, f.nome, f.ordem, f.dificuldade, f.enunciado,
-                   f.objetivo, f.xp_recompensa, f.pontos_recompensa, f.admin_id
+                   1 AS objetivo, f.entradas_quantidade, f.entradas_iniciais,
+                   f.xp_recompensa, f.pontos_recompensa, f.admin_id
             FROM fase f
             ORDER BY f.ordem ASC
         ';
@@ -33,7 +34,8 @@ final class PhaseModel
     public function getById(int $id): ?array
     {
         $stmt = $this->pdo->prepare(
-            'SELECT id, nome, ordem, dificuldade, enunciado, objetivo,
+            'SELECT id, nome, ordem, dificuldade, enunciado, 1 AS objetivo,
+                    entradas_quantidade, entradas_iniciais,
                     xp_recompensa, pontos_recompensa, admin_id
              FROM fase
              WHERE id = :id
@@ -65,7 +67,7 @@ final class PhaseModel
     {
         $stmt = $this->pdo->prepare(
             'SELECT f.id, f.nome, f.ordem, f.dificuldade, f.enunciado,
-                    f.objetivo, f.xp_recompensa, f.pontos_recompensa,
+                    1 AS objetivo, f.xp_recompensa, f.pontos_recompensa,
                     p.desbloqueada, p.concluida
              FROM progresso p
              INNER JOIN fase f ON f.id = p.fase_id
@@ -86,9 +88,22 @@ final class PhaseModel
     public function getMapForUser(int $usuarioId): array
     {
         $stmt = $this->pdo->prepare(
-            'SELECT f.id, f.nome, f.ordem, f.dificuldade, f.xp_recompensa, f.pontos_recompensa,
+            'SELECT f.id, f.nome, f.ordem, f.dificuldade,
+                    f.xp_recompensa, f.pontos_recompensa,
                     (COALESCE(p.desbloqueada, 0) = 1
-                        OR f.ordem = (SELECT MIN(ordem) FROM fase)) AS desbloqueada,
+                        OR f.ordem = (SELECT MIN(ordem) FROM fase)
+                        OR EXISTS (
+                            SELECT 1
+                              FROM fase anterior
+                              INNER JOIN progresso progresso_anterior
+                                      ON progresso_anterior.fase_id = anterior.id
+                             WHERE progresso_anterior.usuario_id = :usuario_id_anterior
+                               AND progresso_anterior.concluida = 1
+                               AND anterior.ordem < f.ordem
+                               AND anterior.ordem = (
+                                   SELECT MAX(ordem) FROM fase WHERE ordem < f.ordem
+                               )
+                        )) AS desbloqueada,
                     COALESCE(p.concluida, 0)      AS concluida,
                     COALESCE(p.xp_ganho, 0)       AS xp_ganho,
                     COALESCE(p.pontos_ganhos, 0)  AS pontos_ganhos,
@@ -97,7 +112,10 @@ final class PhaseModel
              LEFT JOIN progresso p ON p.fase_id = f.id AND p.usuario_id = :usuario_id
              ORDER BY f.ordem ASC'
         );
-        $stmt->execute(['usuario_id' => $usuarioId]);
+        $stmt->execute([
+            'usuario_id' => $usuarioId,
+            'usuario_id_anterior' => $usuarioId,
+        ]);
 
         return array_map(static function (array $f): array {
             foreach (['id', 'ordem', 'xp_recompensa', 'pontos_recompensa', 'xp_ganho', 'pontos_ganhos', 'tentativas'] as $k) {
@@ -119,10 +137,10 @@ final class PhaseModel
         try {
             $stmt = $this->pdo->prepare(
                 'INSERT INTO fase
-                    (nome, ordem, dificuldade, enunciado, objetivo,
+                    (nome, ordem, dificuldade, enunciado, objetivo, entradas_quantidade, entradas_iniciais,
                      xp_recompensa, pontos_recompensa, admin_id)
                  VALUES
-                    (:nome, :ordem, :dificuldade, :enunciado, :objetivo,
+                    (:nome, :ordem, :dificuldade, :enunciado, :objetivo, :entradas_quantidade, :entradas_iniciais,
                      :xp_recompensa, :pontos_recompensa, :admin_id)'
             );
             $stmt->execute($data);
@@ -152,6 +170,7 @@ final class PhaseModel
                 'UPDATE fase
                     SET nome = :nome, ordem = :ordem, dificuldade = :dificuldade,
                         enunciado = :enunciado, objetivo = :objetivo,
+                        entradas_quantidade = :entradas_quantidade, entradas_iniciais = :entradas_iniciais,
                         xp_recompensa = :xp_recompensa, pontos_recompensa = :pontos_recompensa
                   WHERE id = :id'
             );
@@ -212,9 +231,16 @@ final class PhaseModel
             throw new InvalidArgumentException('Informe o enunciado da fase.');
         }
 
-        $objetivo = filter_var($d['objetivo'] ?? null, FILTER_VALIDATE_INT);
-        if ($objetivo === false || !in_array($objetivo, [0, 1], true)) {
-            throw new InvalidArgumentException('O objetivo deve ser 0 ou 1.');
+        $entradasQuantidade = filter_var($d['entradas_quantidade'] ?? 2, FILTER_VALIDATE_INT);
+        $entradasIniciais = (string) ($d['entradas_iniciais'] ?? '');
+        if ($entradasQuantidade === false || $entradasQuantidade < 1 || $entradasQuantidade > 8) {
+            throw new InvalidArgumentException('A fase deve ter entre 1 e 8 entradas.');
+        }
+        if ($entradasIniciais === '') {
+            $entradasIniciais = str_repeat('0', $entradasQuantidade);
+        }
+        if (strlen($entradasIniciais) !== $entradasQuantidade || !preg_match('/^[01]+$/D', $entradasIniciais)) {
+            throw new InvalidArgumentException('Informe um estado inicial 0 ou 1 para cada entrada, na ordem apresentada.');
         }
 
         $xp = filter_var($d['xp_recompensa'] ?? 0, FILTER_VALIDATE_INT);
@@ -228,7 +254,9 @@ final class PhaseModel
             'ordem' => $ordem,
             'dificuldade' => $dificuldade,
             'enunciado' => $enunciado,
-            'objetivo' => $objetivo,
+            'objetivo' => 1,
+            'entradas_quantidade' => $entradasQuantidade,
+            'entradas_iniciais' => $entradasIniciais,
             'xp_recompensa' => $xp,
             'pontos_recompensa' => $pontos,
             'admin_id' => (int) ($d['admin_id'] ?? 0),

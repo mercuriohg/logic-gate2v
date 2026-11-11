@@ -43,7 +43,6 @@ $mapa = $userId !== null ? PhaseController::map($userId) : [];
         <!-- visitante -->
         <div class="home-hero">
           <h2>Logic Gate</h2>
-         
         </div>
      <?php endif; ?>
    </main>

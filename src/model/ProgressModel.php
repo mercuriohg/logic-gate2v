@@ -70,7 +70,20 @@ final class ProgressModel
 
             $primeira = $this->pdo->query('SELECT id FROM fase ORDER BY ordem ASC LIMIT 1')->fetch(PDO::FETCH_ASSOC);
             $atual = $this->find($usuarioId, $faseId);
-            $liberada = (int) $fase['id'] === (int) $primeira['id'] || ($atual && (int) $atual['desbloqueada'] === 1);
+            $stmt = $this->pdo->prepare(
+                'SELECT p.concluida
+                   FROM fase anterior
+                   LEFT JOIN progresso p
+                          ON p.fase_id = anterior.id AND p.usuario_id = :usuario_id
+                  WHERE anterior.ordem < :ordem
+                  ORDER BY anterior.ordem DESC
+                  LIMIT 1'
+            );
+            $stmt->execute(['usuario_id' => $usuarioId, 'ordem' => $fase['ordem']]);
+            $anterior = $stmt->fetch(PDO::FETCH_ASSOC);
+            $liberada = (int) $fase['id'] === (int) $primeira['id']
+                || ($atual && (int) $atual['desbloqueada'] === 1)
+                || ($anterior && (int) $anterior['concluida'] === 1);
             if (!$liberada) {
                 throw new HttpError(403, 'Fase ainda bloqueada.');
             }
@@ -83,7 +96,7 @@ final class ProgressModel
             )->execute(['u' => $usuarioId, 'f' => $faseId]);
             $prog = $this->find($usuarioId, $faseId);
 
-            if ($saida !== (int) $fase['objetivo']) {
+            if ($saida !== 1) {
                 $this->pdo->commit();
                 return [
                     'acertou' => false,
@@ -93,10 +106,12 @@ final class ProgressModel
             }
 
             if ((int) $prog['concluida'] === 1) {
+                $proximaId = $this->unlockNextPhase($usuarioId, (int) $fase['ordem']);
                 $this->pdo->commit();
                 return [
                     'acertou' => true, 'concluida' => true, 'ja_concluida' => true,
                     'tentativas' => (int) $prog['tentativas'], 'xp_ganho' => 0, 'pontos_ganhos' => 0,
+                    'proxima_fase_id' => $proximaId,
                 ];
             }
 
@@ -116,16 +131,7 @@ final class ProgressModel
             $this->pdo->prepare('UPDATE usuario SET xp_total = :xp, nivel = :nivel WHERE id = :id')
                 ->execute(['xp' => $novoXp, 'nivel' => $novoNivel, 'id' => $usuarioId]);
 
-            // desbloqueia a próxima fase (pela ordem)
-            $stmt = $this->pdo->prepare('SELECT id FROM fase WHERE ordem > :o ORDER BY ordem ASC LIMIT 1');
-            $stmt->execute(['o' => $fase['ordem']]);
-            $proxima = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($proxima) {
-                $this->pdo->prepare(
-                    'INSERT INTO progresso (usuario_id, fase_id, desbloqueada) VALUES (:u, :f, 1)
-                     ON DUPLICATE KEY UPDATE desbloqueada = 1'
-                )->execute(['u' => $usuarioId, 'f' => $proxima['id']]);
-            }
+            $proximaId = $this->unlockNextPhase($usuarioId, (int) $fase['ordem']);
 
             $this->pdo->commit();
             return [
@@ -136,7 +142,7 @@ final class ProgressModel
                 'xp_ganho' => $xp,
                 'pontos_ganhos' => $pontos,
                 'usuario' => ['xp_total' => $novoXp, 'nivel' => $novoNivel],
-                'proxima_fase_id' => $proxima ? (int) $proxima['id'] : null,
+                'proxima_fase_id' => $proximaId,
             ];
         } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {
@@ -144,6 +150,23 @@ final class ProgressModel
             }
             throw $e;
         }
+    }
+
+    private function unlockNextPhase(int $usuarioId, int $ordemAtual): ?int
+    {
+        $stmt = $this->pdo->prepare('SELECT id FROM fase WHERE ordem > :ordem ORDER BY ordem ASC LIMIT 1');
+        $stmt->execute(['ordem' => $ordemAtual]);
+        $proxima = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$proxima) {
+            return null;
+        }
+
+        $this->pdo->prepare(
+            'INSERT INTO progresso (usuario_id, fase_id, desbloqueada) VALUES (:usuario_id, :fase_id, 1)
+             ON DUPLICATE KEY UPDATE desbloqueada = 1'
+        )->execute(['usuario_id' => $usuarioId, 'fase_id' => $proxima['id']]);
+
+        return (int) $proxima['id'];
     }
 
     /** Resumo do jogador para o perfil / barra de progresso. */

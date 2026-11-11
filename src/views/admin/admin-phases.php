@@ -62,10 +62,15 @@ $nomeDificuldade = ['facil' => 'Fácil', 'medio' => 'Média', 'dificil' => 'Dif�
 
                 <textarea name="enunciado" placeholder="Enunciado do desafio" class="form-control" rows="4" required><?= $v('enunciado') ?></textarea>
 
-                <select name="objetivo" class="form-control" required>
-                    <option value="1" <?= (int) ($editar['objetivo'] ?? 1) === 1 ? 'selected' : '' ?>>Objetivo: saída 1</option>
-                    <option value="0" <?= (int) ($editar['objetivo'] ?? 1) === 0 ? 'selected' : '' ?>>Objetivo: saída 0</option>
-                </select>
+                <p class="fase-objetivo">Saída-alvo de todas as fases: <strong>1</strong></p>
+
+                <label for="entradas-quantidade">Quantidade de entradas (1 a 8)</label>
+                <input id="entradas-quantidade" type="number" name="entradas_quantidade" class="form-control"
+                       min="1" max="8" required value="<?= (int) ($editar['entradas_quantidade'] ?? 2) ?>">
+                <label for="entradas-iniciais">Estados iniciais (um 0 ou 1 para cada entrada, na ordem)</label>
+                <input id="entradas-iniciais" type="text" name="entradas_iniciais" class="form-control"
+                       inputmode="numeric" pattern="[01]{1,8}" maxlength="8" required
+                       value="<?= Http::e($editar['entradas_iniciais'] ?? '00') ?>">
 
                 <input type="number" name="xp_recompensa" placeholder="XP da fase" class="form-control" min="0" required
                        value="<?= (int) ($editar['xp_recompensa'] ?? 50) ?>">
@@ -90,18 +95,19 @@ $nomeDificuldade = ['facil' => 'Fácil', 'medio' => 'Média', 'dificil' => 'Dif�
 
         <table class="admin-table">
             <thead>
-                <tr><th>Ordem</th><th>Nome</th><th>Dificuldade</th><th>Obj.</th><th>XP</th><th>Pontos</th><th>Ações</th></tr>
+                <tr><th>Ordem</th><th>Nome</th><th>Dificuldade</th><th>Entradas</th><th>Obj.</th><th>XP</th><th>Pontos</th><th>Ações</th></tr>
             </thead>
             <tbody>
                 <?php if (!$fases): ?>
-                    <tr><td colspan="7">Nenhuma fase cadastrada ainda.</td></tr>
+                    <tr><td colspan="8">Nenhuma fase cadastrada ainda.</td></tr>
                 <?php endif; ?>
                 <?php foreach ($fases as $f): ?>
                     <tr>
                         <td><?= (int) $f['ordem'] ?></td>
                         <td><?= Http::e($f['nome']) ?></td>
                         <td><?= Http::e($nomeDificuldade[$f['dificuldade']] ?? $f['dificuldade']) ?></td>
-                        <td><?= (int) $f['objetivo'] ?></td>
+                        <td><?= (int) $f['entradas_quantidade'] ?></td>
+                        <td>1</td>
                         <td><?= (int) $f['xp_recompensa'] ?></td>
                         <td><?= (int) $f['pontos_recompensa'] ?></td>
                         <td class="admin-actions">
