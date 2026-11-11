@@ -35,7 +35,6 @@ $portasDoCircuito = array_map(
     <link rel="stylesheet" href="/assets/css/style.css?v=2">
 </head>
 <body>
-    <?php include __DIR__ . '/components/header.php'; ?>
 
     <main id="container-main" class="fase-page">
     <?php if ($fase): ?>
