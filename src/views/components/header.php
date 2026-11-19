@@ -15,9 +15,6 @@ $username = $_SESSION['username'] ?? null;
   <ul id="list-ul">
       <li><a href="/ranking" class="btn">Ranking</a></li>
       <li><a href="/projeto" class="btn">Projeto</a></li>
-      <?php if ($username && !$isAdmin): ?>
-          <li><a href="/fase" class="btn">Fases</a></li>
-      <?php endif; ?>
       <?php if ($isAdmin): ?>
           <li><a href="/admin" class="btn">Admin</a></li>
           <li><a href="/logout" class="btn">Logout</a></li>

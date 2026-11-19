@@ -64,7 +64,7 @@ $portasDoCircuito = array_map(
 
             <nav class="circuit-toolbar" aria-label="Controles do simulador">
                 <div class="circuit-toolbar-group">
-                    <a href="/fase" class="btn-admin" aria-label="Voltar ao mapa de fases">← Fases</a>
+                    <a href="/" class="btn-admin" aria-label="Voltar ao mapa de fases">← Fases</a>
                     <button type="button" id="circuit-reset" class="btn-admin">↺ Restaurar</button>
                 </div>
                 <span class="circuit-toolbar-title">Fase <?= (int) $fase['ordem'] ?> · <?= Http::e($fase['nome']) ?></span>

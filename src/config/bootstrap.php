@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/Database.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 require_once __DIR__ . '/../helpers/HttpError.php';
 require_once __DIR__ . '/../helpers/Http.php';
@@ -14,3 +15,4 @@ require_once __DIR__ . '/../model/AdminModel.php';
 require_once __DIR__ . '/../model/GateModel.php';
 require_once __DIR__ . '/../model/PhaseModel.php';
 require_once __DIR__ . '/../model/ProgressModel.php';
+require_once __DIR__ . '/../model/PasswordResetModel.php';

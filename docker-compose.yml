@@ -15,6 +15,13 @@ services:
       DB_PASSWORD: logic_gate_password
       APP_ENV: dev
       XP_POR_NIVEL: 100
+      MAIL_HOST: ${MAIL_HOST:-}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-Logic Gate}
+      MAIL_ENCRYPTION: ${MAIL_ENCRYPTION:-tls}
     depends_on:
       mysql:
         condition: service_healthy
@@ -28,6 +35,11 @@ services:
       MYSQL_USER: logic_gate_user
       MYSQL_PASSWORD: logic_gate_password
       MYSQL_ROOT_PASSWORD: root_password
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     ports:
       - "3307:3306"
     volumes:

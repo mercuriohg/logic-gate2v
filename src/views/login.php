@@ -5,6 +5,7 @@ require_once __DIR__ . '/../config/bootstrap.php';
 Session::start();
 
 $loginError = Session::flash('login_error');
+$loginNotice = Session::flash('login_notice');
 ?>
 <html lang="pt-br">
 <head>
@@ -35,8 +36,9 @@ $loginError = Session::flash('login_error');
                 </div>
                 <div class="labels">
                   <span id="error-message"><?= htmlspecialchars($loginError, ENT_QUOTES, 'UTF-8') ?></span>
+                  <span class="form-message form-message-notice"><?= Http::e($loginNotice) ?></span>
                     <label class="style-label">Não tem uma conta? <a href="/cadastro">Cadastre-se</a></label>
-                   <label  class="style-label"><a href="#">Esqueci minha senha</a></label> 
+                   <label class="style-label"><a href="/recuperar-senha">Esqueci minha senha</a></label>
                 </div>
                 </form>
             </div>

@@ -67,6 +67,53 @@
   font-family: "Pixelify Sans", Arial, Helvetica, sans-serif;
   font-size: 14px;
 }
+.form-description {
+  margin: 0 20px 16px;
+  color: white;
+  font-family: "Pixelify Sans", Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+#login-container.password-reset-card {
+  width: min(calc(100% - 32px), 560px);
+  height: auto;
+  min-height: 0;
+  margin: 48px auto;
+  padding: 32px;
+}
+#login-form.password-reset-form {
+  width: 100%;
+}
+.password-reset-form .form-description {
+  width: auto;
+  max-width: none;
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+.password-reset-form #user-box label,
+.password-reset-form #email-box label,
+.password-reset-form #password-box label {
+  display: block;
+  margin-left: 0;
+}
+.password-reset-form #user-box .input-user,
+.password-reset-form #email-box .input-user,
+.password-reset-form #password-box .input-user {
+  width: 100%;
+  margin: 8px 0 16px;
+}
+.password-reset-form .labels {
+  align-items: center;
+}
+.labels .form-message {
+  margin: 12px 0;
+  text-align: center;
+}
+.labels .form-message-error {
+  color: #ff6b6b;
+}
+.labels .form-message-notice {
+  color: #9df0a8;
+}
 .style-label {
   color: rgb(145, 12, 185);
   margin: 10px;

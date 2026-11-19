@@ -61,6 +61,7 @@ O projeto usa roteamento dentro da pasta `src/public/index.php`. As principais r
 
 - `/` → página inicial
 - `/login` → tela de login
+- `/recuperar-senha` → solicitação de código para redefinir a senha
 - `/cadastro` → tela de cadastro
 - `/projeto` → página do projeto / simulação
 - `/ranking` → ranking de usuários
@@ -142,6 +143,27 @@ docker compose exec php php scripts/criar-admin.php admin MinhaSenhaNova
 ```
 
 Esse mesmo comando cria novos admins (se o login não existir) ou troca a senha (se já existir).
+
+### Configurando o envio dos códigos de recuperação
+Configure as variáveis SMTP no `.env` da raiz do projeto antes de iniciar o Docker:
+
+```env
+MAIL_HOST=smtp.seuprovedor.com
+MAIL_PORT=587
+MAIL_USERNAME=seu-usuario-smtp
+MAIL_PASSWORD=sua-senha-smtp
+MAIL_FROM_ADDRESS=no-reply@seudominio.com
+MAIL_FROM_NAME=Logic Gate
+MAIL_ENCRYPTION=tls
+```
+
+Use `MAIL_ENCRYPTION=ssl` com a porta indicada pelo provedor (geralmente 465). Depois, reconstrua o container com `docker compose up -d --build`. Os códigos expiram em 15 minutos, permitem até 5 tentativas e têm intervalo mínimo de 1 minuto entre envios para a mesma conta.
+
+Para bancos já existentes, aplique a migração uma única vez:
+
+```powershell
+Get-Content database/migracao-recuperacao-senha.sql | docker compose exec -T mysql mysql -uroot -proot_password
+```
 
 ### Atualizando um banco que já existe (estatísticas)
 As estatísticas do admin e o tempo médio do perfil usam 3 colunas novas (`usuario.ultimo_acesso`, `progresso.data_inicio`, `progresso.tempo_segundos`). **Faça uma das duas opções antes de usar o site:**

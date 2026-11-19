@@ -1,0 +1,7 @@
+{
+    "license": "GPL-3.0-only",
+    "type": "project",
+    "require": {
+        "phpmailer/phpmailer": "^6.10"
+    }
+}

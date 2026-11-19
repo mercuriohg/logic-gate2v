@@ -10,6 +10,8 @@ class RouterController
             // PAGES
             '' => __DIR__ . '/../views/index.php',
             'login' => __DIR__ . '/../views/login.php',
+            'recuperar-senha' => __DIR__ . '/../views/recuperar-senha.php',
+            'validar-codigo' => __DIR__ . '/../views/validar-codigo.php',
             'projeto' => __DIR__ . '/../views/projeto.php',
             'cadastro' => __DIR__ . '/../views/cadastro.php',
             'profile' => __DIR__ . '/../views/profile.php',
@@ -34,6 +36,16 @@ class RouterController
 
         if ($uri === 'cadastro' && $method === 'POST') {
             require __DIR__ . '/../api/Cadastro.php';
+            return;
+        }
+
+        if ($method === 'POST' && in_array($uri, ['recuperar-senha', 'redefinir-senha'], true)) {
+            require_once __DIR__ . '/PasswordResetController.php';
+            if ($uri === 'recuperar-senha') {
+                PasswordResetController::requestCode();
+            } else {
+                PasswordResetController::resetPassword();
+            }
             return;
         }
 
